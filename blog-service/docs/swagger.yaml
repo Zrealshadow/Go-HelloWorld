@@ -1,0 +1,435 @@
+definitions:
+  app.Pager:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  errcode.Error:
+    properties:
+      code:
+        type: integer
+      details:
+        items:
+          type: string
+        type: array
+      msg:
+        type: string
+    type: object
+  model.Article:
+    properties:
+      content:
+        type: string
+      cover_image_url:
+        type: string
+      created_by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      desc:
+        type: string
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      state:
+        type: integer
+      title:
+        type: string
+    type: object
+  model.ArticleSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Article'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+        type: object
+    type: object
+  model.Tag:
+    properties:
+      created_by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  model.TagSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+        type: object
+    type: object
+info:
+  contact: {}
+  description: Go programming tour book
+  license: {}
+  title: blog Service
+  version: "1.0"
+paths:
+  /apu/v1/articles:
+    get:
+      parameters:
+      - description: artcile title
+        in: query
+        name: title
+        type: string
+      - default: 1
+        description: status
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: page num
+        in: query
+        name: page
+        type: integer
+      - description: page size
+        in: query
+        name: page_size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get all Articles
+    post:
+      parameters:
+      - description: article title
+        in: body
+        minLength: 3
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: article Describtion
+        in: body
+        minLength: 3
+        name: Desc
+        required: true
+        schema:
+          type: string
+      - description: article content
+        in: body
+        name: Content
+        required: true
+        schema:
+          type: string
+      - description: article Cover Image Urls
+        in: body
+        name: ConverImageUrl
+        schema:
+          type: string
+      - default: 1
+        description: 状态
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Create article
+  /apu/v1/articles/{id}:
+    delete:
+      parameters:
+      - description: article Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            type: string
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Delete tag
+    get:
+      parameters:
+      - description: article Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get article
+    put:
+      parameters:
+      - description: article Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: article title
+        in: body
+        minLength: 3
+        name: title
+        schema:
+          type: string
+      - default: 1
+        description: status
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: modified author
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            items:
+              $ref: '#/definitions/model.ArticleSwagger'
+            type: array
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Update exist tag
+  /apu/v1/tags:
+    get:
+      parameters:
+      - description: tag name
+        in: query
+        name: name
+        type: string
+      - default: 1
+        description: status
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: page num
+        in: query
+        name: page
+        type: integer
+      - description: page size
+        in: query
+        name: page_size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            $ref: '#/definitions/model.TagSwagger'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get all tags
+    post:
+      parameters:
+      - description: tag name
+        in: body
+        minLength: 3
+        name: name
+        schema:
+          type: string
+      - default: 1
+        description: status
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: create author
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: created_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            $ref: '#/definitions/model.TagSwagger'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Create new Tag
+  /apu/v1/tags/{id}:
+    delete:
+      parameters:
+      - description: tag Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            type: string
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Delete tag
+    put:
+      parameters:
+      - description: tag Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: tag name
+        in: body
+        minLength: 3
+        name: name
+        schema:
+          type: string
+      - default: 1
+        description: status
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: modified author
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sucess
+          schema:
+            items:
+              $ref: '#/definitions/model.TagSwagger'
+            type: array
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Server Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Update exist tag
+swagger: "2.0"
