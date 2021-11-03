@@ -36,6 +36,8 @@ func main() {
 	}
 	// global.Logger.Infof("%s: go-programming-tour-book/%s", "eddycjy", "blog-service")
 	s.ListenAndServe()
+
+	Signal.notify()
 }
 
 func init() {
@@ -81,6 +83,17 @@ func setupSetting() error {
 		return err
 	}
 
+	err = setting.ReadSection("JWT", &global.JWTSetting)
+	if err != nil {
+		return err
+	}
+
+	err = setting.ReadSection("Email", &global.EmailSetting)
+	if err != nil {
+		return err
+	}
+	global.AppSetting.DefaultContextTimeout *= time.Second
+	global.JWTSetting.Expire *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	return nil
